@@ -6,7 +6,6 @@
 
 
 
-[![KelsonQu's GitHub stats](https://github-readme-stats.vercel.app/api?username=kelsonqu)](https://github.com/kelsonqu/github-readme-stats)
 <!---
 KaichenQu/KaichenQu is a ✨ special
 
