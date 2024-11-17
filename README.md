@@ -37,9 +37,10 @@
 
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)
 ![Apache Kafka](https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)
-![Kaichen's GitHub stats](https://github-readme-stats.vercel.app/api?username=KaichenQu&show_icons=true&theme=dracula)
 
-## Top Languages
+## Stats & Top Languages
+
+![Kaichen's GitHub stats](https://github-readme-stats.vercel.app/api?username=KaichenQu&show_icons=true&theme=dracula)
 
 ![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=KaichenQu&layout=compact&theme=dracula)
 
