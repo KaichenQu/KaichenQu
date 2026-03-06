@@ -26,14 +26,10 @@
   <img src="https://techstack-generator.vercel.app/java-icon.svg" alt="Java" width="65" height="65"/>
   <img src="https://techstack-generator.vercel.app/python-icon.svg" alt="Python" width="65" height="65"/>
   <img src="https://techstack-generator.vercel.app/ts-icon.svg" alt="TypeScript" width="65" height="65"/>
-  <img src="https://techstack-generator.vercel.app/js-icon.svg" alt="JavaScript" width="65" height="65"/>
-  <img src="https://techstack-generator.vercel.app/cpp-icon.svg" alt="C++" width="65" height="65"/>
+  <img src="https://techstack-generator.vercel.app/mysql-icon.svg" alt="SQL" width="65" height="65"/>
   <img src="https://techstack-generator.vercel.app/react-icon.svg" alt="React" width="65" height="65"/>
-  <img src="https://techstack-generator.vercel.app/redux-icon.svg" alt="Redux" width="65" height="65"/>
-  <img src="https://techstack-generator.vercel.app/django-icon.svg" alt="Django" width="65" height="65"/>
-  <img src="https://techstack-generator.vercel.app/docker-icon.svg" alt="Docker" width="65" height="65"/>
   <img src="https://techstack-generator.vercel.app/aws-icon.svg" alt="AWS" width="65" height="65"/>
-  <img src="https://techstack-generator.vercel.app/mysql-icon.svg" alt="MySQL" width="65" height="65"/>
+  <img src="https://techstack-generator.vercel.app/docker-icon.svg" alt="Docker" width="65" height="65"/>
   <img src="https://techstack-generator.vercel.app/github-icon.svg" alt="GitHub" width="65" height="65"/>
 
 </div>
@@ -42,11 +38,14 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black"/>
+  <img src="https://img.shields.io/badge/C%2FC%2B%2B-00599C?style=flat-square&logo=cplusplus&logoColor=white"/>
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white"/>
   <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white"/>
   <img src="https://img.shields.io/badge/Gin-00ADD8?style=flat-square&logo=go&logoColor=white"/>
   <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Redux-764ABC?style=flat-square&logo=redux&logoColor=white"/>
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white"/>
   <img src="https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white"/>
   <img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white"/>
