@@ -14,15 +14,6 @@
 ---
 
 <div align="center">
-  <img width="100%" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=KaichenQu&theme=github_dark" />
-</div>
-
-<div align="center">
-  <img width="49%" src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=KaichenQu&theme=github_dark" />
-  <img width="49%" src="https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=KaichenQu&theme=github_dark&utcOffset=-8" />
-</div>
-
-<div align="center">
   <img src="https://streak-stats.demolab.com?user=KaichenQu&theme=github-dark-blue&hide_border=true&background=0D1117&stroke=58A6FF&ring=00D9FF&fire=58A6FF&currStreakNum=C9D1D9&currStreakLabel=58A6FF&sideNums=C9D1D9&sideLabels=58A6FF&dates=8B949E" />
 </div>
 
