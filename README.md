@@ -14,8 +14,13 @@
 ---
 
 <div align="center">
-  <img height="160" src="https://github-readme-stats.vercel.app/api?username=KaichenQu&show_icons=true&theme=github_dark&hide_border=true&bg_color=0D1117&title_color=58A6FF&icon_color=00D9FF&text_color=C9D1D9&rank_icon=github" />
-  <img height="160" src="https://github-readme-stats.vercel.app/api/top-langs/?username=KaichenQu&layout=compact&theme=github_dark&hide_border=true&bg_color=0D1117&title_color=58A6FF&text_color=C9D1D9&langs_count=6" />
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=KaichenQu&theme=github_dark" />
+</div>
+
+<div align="center">
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=KaichenQu&theme=github_dark" />
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=KaichenQu&theme=github_dark" />
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=KaichenQu&theme=github_dark" />
 </div>
 
 <div align="center">
