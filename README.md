@@ -19,24 +19,28 @@
 
 ---
 
-## 🚀 Featured Projects
+## 🌐 Portfolio
 
 <div align="center">
-  <a href="https://github.com/KaichenQu/REPO_1">
-    <img width="49%" src="https://github-readme-stats-fast.vercel.app/api/pin/?username=KaichenQu&repo=REPO_1&theme=github_dark&hide_border=true&bg_color=0D1117&title_color=58A6FF&icon_color=00D9FF&text_color=C9D1D9" />
-  </a>
-  <a href="https://github.com/KaichenQu/REPO_2">
-    <img width="49%" src="https://github-readme-stats-fast.vercel.app/api/pin/?username=KaichenQu&repo=REPO_2&theme=github_dark&hide_border=true&bg_color=0D1117&title_color=58A6FF&icon_color=00D9FF&text_color=C9D1D9" />
-  </a>
-</div>
 
-<div align="center">
-  <a href="https://github.com/KaichenQu/REPO_3">
-    <img width="49%" src="https://github-readme-stats-fast.vercel.app/api/pin/?username=KaichenQu&repo=REPO_3&theme=github_dark&hide_border=true&bg_color=0D1117&title_color=58A6FF&icon_color=00D9FF&text_color=C9D1D9" />
-  </a>
-  <a href="https://github.com/KaichenQu/REPO_4">
-    <img width="49%" src="https://github-readme-stats-fast.vercel.app/api/pin/?username=KaichenQu&repo=REPO_4&theme=github_dark&hide_border=true&bg_color=0D1117&title_color=58A6FF&icon_color=00D9FF&text_color=C9D1D9" />
-  </a>
+<a href="https://kelsonqu.com">
+  <img src="https://img.shields.io/badge/kelsonqu.com-%E2%86%92_Visit_Now-58A6FF?style=for-the-badge&logo=vercel&logoColor=white"/>
+</a>
+
+<br/><br/>
+
+*" Ship fast. Scale further. Break nothing. "*
+
+<br/>
+
+<table>
+  <tr>
+    <td align="center">🎓&nbsp;<b>M.S. CS</b><br/><sub>Northeastern University</sub></td>
+    <td align="center">💼&nbsp;<b>Backend Engineer</b><br/><sub>Evenness Inc. · Cupertino</sub></td>
+    <td align="center">🚗&nbsp;<b>R&D Engineer</b><br/><sub>BMW Group · Shanghai</sub></td>
+  </tr>
+</table>
+
 </div>
 
 ---
