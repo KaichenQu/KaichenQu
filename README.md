@@ -96,28 +96,3 @@ const kelson = {
   <br/><br/>
   <img src="https://skillicons.dev/icons?i=gcp,aws,docker,kubernetes,terraform,kafka,redis,postgres,mongodb,elasticsearch&perline=14" />
 </div>
-
----
-
-## GitHub Stats
-
-<div align="center">
-  <img height="165em" src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=KelsonQu&theme=github_dark"/>
-  &nbsp;&nbsp;
-  <img height="165em" src="https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=KelsonQu&theme=github_dark"/>
-</div>
-
-<br/>
-
-<div align="center">
-  <img src="https://streak-stats.demolab.com?user=KelsonQu&theme=github-dark-blue&hide_border=true&background=0D1117&stroke=58A6FF&ring=00D9FF&fire=58A6FF&currStreakNum=C9D1D9&currStreakLabel=58A6FF&sideNums=C9D1D9&sideLabels=58A6FF&dates=8B949E" />
-</div>
-
-<br/>
-
-<div align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=KelsonQu&theme=github-compact&bg_color=0D1117&color=58A6FF&line=00D9FF&point=FFFFFF&area=true&hide_border=true" />
-</div>
-
-<!-- Footer -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2,3,12,20&height=120&section=footer" width="100%"/>
