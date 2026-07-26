@@ -1,12 +1,21 @@
 [
   {
     "date": "2026-07-26",
+    "macrostructure": "Workbench",
+    "theme": "custom",
+    "theme_axes": "dark / mono display / warm-amber accent",
+    "vibe": "engineering drawing, instrument read-out",
+    "enrichment": "E5 hand-built SVG — ruled title block, chip index, thermal calendar",
+    "brief": "KaichenQu GitHub profile README — flat ink, hairline rules, graph-paper grid, register marks; deliberately drops the gradient-bloom + node-constellation vocabulary of the previous run"
+  },
+  {
+    "date": "2026-07-26",
     "macrostructure": "Marquee Hero",
     "theme": "custom",
     "theme_axes": "dark / grotesk-sans / chromatic-violet",
     "vibe": "deep violet night, quiet network glow",
     "enrichment": "E5 hand-built SVG — animated hero, toolchain panel, contribution calendar",
-    "brief": "KaichenQu GitHub profile README — self-drawn SVG panels, no third-party stat cards, no GitHub Actions"
+    "brief": "KaichenQu GitHub profile README — self-drawn SVG panels, superseded same day for reading as machine-generated"
   },
   {
     "date": "2026-07-26",

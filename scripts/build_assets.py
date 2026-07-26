@@ -17,6 +17,12 @@ restrictedContributionsCount stays 0, so nothing signals the gap. Verified
 2026-07-26: 42 commits authored on longrangeorder default branches, all
 correctly attributed to the account, none present in the collection. Turn
 the setting on before re-running if those should be counted.
+
+Visual language: flat ink, hairline rules, graph-paper grid, corner register
+marks, one amber signal colour, monospace-led type. Deliberately no radial
+gradient blooms, no violet-to-cyan wash and no abstract node constellation --
+that trio is the house style of machine-generated "tech" pages and reads as
+such instantly.
 """
 
 from __future__ import annotations
@@ -33,18 +39,21 @@ ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "assets"
 
 # ── palette ───────────────────────────────────────────────────────────────────
-BG0, BG1, BG2 = "#0B0817", "#151030", "#0D0A1C"
-SURFACE = "#120F24"
-STROKE = "#2A2148"
-TEXT = "#EDEAF7"
-MUTED = "#A29CC0"
-FAINT = "#6F6890"
-VIOLET = "#A78BFA"
-CYAN = "#22D3EE"
-PINK = "#F472B6"
+# Neutral near-black, not a tinted one. A violet or blue cast on the background
+# is most of what makes the AI-generated look read as AI-generated.
+INK = "#0A0A0C"
+PANEL = "#101013"
+CHIP = "#131317"
+RULE = "#26262E"  # visible hairline
+RULE_F = "#17171C"  # graph-paper hairline
+TEXT = "#E8E8EA"
+MUTED = "#8A8A93"
+FAINT = "#57575F"
+AMBER = "#FFB224"  # the single signal colour — instrument amber
+AMBER_D = "#8A5E12"
 
-# contribution intensity ramp, level 0..4
-LEVELS = ["#181430", "#3B2A73", "#6541C4", "#9A6DFF", "#C9A6FF"]
+# contribution intensity ramp, level 0..4 — a thermal read-out, not a gradient
+LEVELS = ["#141418", "#4A3411", "#8A5E14", "#C78C1A", "#FFB224"]
 
 MONO = (
     "ui-monospace,'SFMono-Regular','SF Mono',Menlo,Consolas,'Liberation Mono',monospace"
@@ -80,7 +89,7 @@ def icon_paths(slug: str) -> tuple[list[str], float, float]:
 
     simple-icons is the preferred source (square 24x24, single path). AWS is not
     in simple-icons for trademark reasons, so it falls back to devicon, whose
-    only AWS asset is a wide wordmark — hence the caller scales by viewBox
+    only AWS asset is a wide wordmark -- hence the caller scales by viewBox
     rather than assuming 24x24.
     """
     svg = None
@@ -103,7 +112,8 @@ def icon_paths(slug: str) -> tuple[list[str], float, float]:
 
 # label, simple-icons slug, tint. Tints are brand colours nudged for legibility
 # on a near-black surface (Django, Kafka, Next.js and Express are unreadable at
-# their official values here).
+# their official values here). The icons keep their brand colour on purpose:
+# they are the content, and only the chrome around them goes monochrome.
 STACK = [
     (
         "Languages",
@@ -170,6 +180,60 @@ STACK = [
 ]
 
 
+# ── shared panel chrome ───────────────────────────────────────────────────────
+def defs() -> str:
+    """Graph-paper grid: a fine 10px module with a heavier line every 50px."""
+    return (
+        "<defs>"
+        '<pattern id="fine" width="10" height="10" patternUnits="userSpaceOnUse">'
+        f'<path d="M10 0H0V10" fill="none" stroke="{RULE_F}" stroke-width="0.5"/>'
+        "</pattern>"
+        '<pattern id="coarse" width="50" height="50" patternUnits="userSpaceOnUse">'
+        '<rect width="50" height="50" fill="url(#fine)"/>'
+        f'<path d="M50 0H0V50" fill="none" stroke="{RULE_F}" stroke-width="1"/>'
+        "</pattern>"
+        "</defs>"
+    )
+
+
+def register_marks(w: float, h: float, inset: float = 16, arm: float = 7) -> list[str]:
+    """Corner crosshairs, as on a technical drawing or a print registration."""
+    out = []
+    for cx, cy in (
+        (inset, inset),
+        (w - inset, inset),
+        (inset, h - inset),
+        (w - inset, h - inset),
+    ):
+        out.append(
+            f'<path d="M{cx - arm} {cy}H{cx + arm}M{cx} {cy - arm}V{cy + arm}" '
+            f'stroke="{RULE}" stroke-width="1"/>'
+        )
+    return out
+
+
+def panel(w: float, h: float) -> list[str]:
+    """Flat surface + graph paper + hairline border + register marks."""
+    return [
+        defs(),
+        f'<rect width="{w}" height="{h}" rx="6" fill="{INK}"/>',
+        f'<rect width="{w}" height="{h}" rx="6" fill="url(#coarse)"/>',
+        f'<rect x="0.5" y="0.5" width="{w - 1}" height="{h - 1}" rx="6" '
+        f'fill="none" stroke="{RULE}"/>',
+        *register_marks(w, h),
+    ]
+
+
+def heading(x: float, y: float, title: str, kicker: str) -> list[str]:
+    """Panel title with a mono kicker and a short amber rule beneath it."""
+    return [
+        f'<text x="{x}" y="{y}" font-family="{MONO}" font-size="11" fill="{AMBER}" '
+        f'letter-spacing="3">{esc(kicker)}</text>',
+        f'<text x="{x}" y="{y + 26}" font-family="{SANS}" font-size="19" '
+        f'font-weight="600" fill="{TEXT}">{esc(title)}</text>',
+    ]
+
+
 # ── contribution calendar ─────────────────────────────────────────────────────
 def calendar() -> dict:
     q = """
@@ -234,69 +298,58 @@ def build_contributions() -> None:
     busiest = max(days, key=lambda d: d["contributionCount"])
     longest = longest_streak(days)
 
-    CELL, GAP = 13, 3
+    CELL, GAP = 12, 4
     STEP = CELL + GAP
-    PAD_L, PAD_T = 118, 106
-    W = PAD_L + len(weeks) * STEP + 30
+    PAD_L, PAD_T = 116, 116
+    W = PAD_L + len(weeks) * STEP + 34
     H = PAD_T + 7 * STEP + 96
 
-    o: list[str] = []
-    o.append(
+    o: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}" role="img" '
-        f'aria-label="GitHub contribution calendar: {total} contributions in the last year">'
-    )
-    o.append(f"<title>{total} contributions in the last year</title>")
-    o.append(defs_backdrop())
-    o.append(f'<rect width="{W}" height="{H}" rx="18" fill="url(#bg)"/>')
-    o.append(
-        f'<rect x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="18" fill="none" stroke="{STROKE}"/>'
-    )
-    o.append(f'<circle cx="{W * 0.16:.0f}" cy="34" r="190" fill="url(#glowV)"/>')
-    o.append(f'<circle cx="{W * 0.88:.0f}" cy="{H - 20}" r="170" fill="url(#glowC)"/>')
+        f'aria-label="GitHub contribution calendar: {total} contributions '
+        f'in the last year">',
+        f"<title>{total} contributions in the last year</title>",
+        *panel(W, H),
+        *heading(34, 46, "Contribution calendar", "COMMIT LOG"),
+    ]
 
     o.append(
-        f'<text x="34" y="46" font-family="{SANS}" font-size="21" font-weight="600" fill="{TEXT}">'
-        f"Contribution calendar</text>"
+        f'<text x="{W - 34}" y="50" text-anchor="end" font-family="{MONO}" '
+        f'font-size="33" font-weight="700" fill="{AMBER}">{total}</text>'
     )
     o.append(
-        f'<text x="34" y="70" font-family="{MONO}" font-size="13" fill="{FAINT}" letter-spacing="1.4">'
-        f"{days[0]['date']} &#8594; {days[-1]['date']}</text>"
+        f'<text x="{W - 34}" y="70" text-anchor="end" font-family="{MONO}" '
+        f'font-size="10" fill="{FAINT}" letter-spacing="2">'
+        f"{days[0]['date']} / {days[-1]['date']}</text>"
     )
-    o.append(
-        f'<text x="{W - 34}" y="52" text-anchor="end" font-family="{SANS}" font-size="34" '
-        f'font-weight="700" fill="{VIOLET}">{total}</text>'
-    )
-    o.append(
-        f'<text x="{W - 34}" y="72" text-anchor="end" font-family="{MONO}" font-size="11" '
-        f'fill="{FAINT}" letter-spacing="1.6">CONTRIBUTIONS</text>'
-    )
+    o.append(f'<line x1="34" y1="88" x2="{W - 34}" y2="88" stroke="{RULE}"/>')
 
     # weekday gutter
-    for wd, name in ((1, "Mon"), (3, "Wed"), (5, "Fri")):
+    for wd, name in ((1, "MON"), (3, "WED"), (5, "FRI")):
         y = PAD_T + wd * STEP + CELL - 2
         o.append(
-            f'<text x="{PAD_L - 12}" y="{y}" text-anchor="end" font-family="{MONO}" '
-            f'font-size="11" fill="{FAINT}">{name}</text>'
+            f'<text x="{PAD_L - 14}" y="{y}" text-anchor="end" font-family="{MONO}" '
+            f'font-size="9.5" fill="{FAINT}" letter-spacing="1">{name}</text>'
         )
 
     # month ruler. The window starts mid-month, so week 0 and week 1 can both be
-    # "first week of a month" — hold a minimum gap or the two labels collide.
+    # "first week of a month" -- hold a minimum gap or the two labels collide.
     seen: set[str] = set()
     last_x = -999.0
     for wi, w in enumerate(weeks):
-        m = date.fromisoformat(w["firstDay"]).strftime("%b")
+        m = date.fromisoformat(w["firstDay"]).strftime("%b").upper()
         x = PAD_L + wi * STEP
-        if m not in seen and wi < len(weeks) - 1 and x - last_x >= 42:
+        if m not in seen and wi < len(weeks) - 1 and x - last_x >= 46:
             seen.add(m)
             last_x = x
             o.append(
-                f'<text x="{x}" y="{PAD_T - 14}" font-family="{MONO}" '
-                f'font-size="11" fill="{FAINT}">{m}</text>'
+                f'<path d="M{x} {PAD_T - 12}v5" stroke="{RULE}"/>'
+                f'<text x="{x}" y="{PAD_T - 18}" font-family="{MONO}" '
+                f'font-size="9.5" fill="{FAINT}" letter-spacing="1">{m}</text>'
             )
 
-    # cells
-    i = 0
+    # cells — square, hard-edged, no glow
     for wi, w in enumerate(weeks):
         for d in w["contributionDays"]:
             lv = (
@@ -306,193 +359,155 @@ def build_contributions() -> None:
             )
             x = PAD_L + wi * STEP
             y = PAD_T + d["weekday"] * STEP
-            extra = ""
-            if lv >= 3:
-                # stagger the shimmer so it reads as a field, not a pulse
-                extra = f' class="hot" style="animation-delay:{(i % 17) * 0.19:.2f}s"'
             o.append(
-                f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="3.5" '
-                f'fill="{LEVELS[lv]}"{extra}><title>{d["date"]}: '
+                f'<rect x="{x}" y="{y}" width="{CELL}" height="{CELL}" rx="1.5" '
+                f'fill="{LEVELS[lv]}"><title>{d["date"]} &#183; '
                 f"{d['contributionCount']}</title></rect>"
             )
-            i += 1
 
-    # legend
-    ly = PAD_T + 7 * STEP + 30
-    o.append(
-        f'<text x="{PAD_L}" y="{ly + 11}" font-family="{MONO}" font-size="11" fill="{FAINT}">Less</text>'
-    )
-    # Spell the band each tone stands for; a bare Less→More ramp says nothing
-    # about whether a lit cell means one commit or eighteen.
+    # legend, with the band each tone stands for. A bare Less-to-More ramp says
+    # nothing about whether a lit cell means one commit or eighteen.
+    ly = PAD_T + 7 * STEP + 28
     bands = ["0"]
     for n in range(1, 4):
         lo, hi = thresholds[n - 1] + 1, thresholds[n]
-        bands.append(str(lo) if lo >= hi else f"{lo}–{hi}")
+        bands.append(str(lo) if lo >= hi else f"{lo}-{hi}")
     bands.append(f"{thresholds[3] + 1}+")
 
-    # wide enough for the band labels to sit under each swatch without touching
-    LSTEP = 40
+    LSTEP = 42
     for n, c in enumerate(LEVELS):
-        cx = PAD_L + 42 + n * LSTEP
+        cx = PAD_L + n * LSTEP
         o.append(
-            f'<rect x="{cx}" y="{ly}" width="{CELL}" height="{CELL}" rx="3.5" fill="{c}"/>'
+            f'<rect x="{cx}" y="{ly}" width="{CELL}" height="{CELL}" rx="1.5" fill="{c}"/>'
         )
         o.append(
-            f'<text x="{cx + CELL / 2}" y="{ly + 26}" text-anchor="middle" '
-            f'font-family="{MONO}" font-size="8.5" fill="{FAINT}">{bands[n]}</text>'
+            f'<text x="{cx + CELL / 2}" y="{ly + 25}" text-anchor="middle" '
+            f'font-family="{MONO}" font-size="9" fill="{FAINT}">{bands[n]}</text>'
         )
     o.append(
-        f'<text x="{PAD_L + 42 + 4 * LSTEP + CELL + 12}" y="{ly + 11}" font-family="{MONO}" font-size="11" '
-        f'fill="{FAINT}">More</text>'
+        f'<text x="{PAD_L - 14}" y="{ly + 10}" text-anchor="end" font-family="{MONO}" '
+        f'font-size="9.5" fill="{FAINT}" letter-spacing="1">PER DAY</text>'
     )
 
-    # stat strip
-    stats = [
-        ("ACTIVE DAYS", str(active)),
-        ("LONGEST STREAK", f"{longest}d"),
-        ("BUSIEST DAY", f"{busiest['contributionCount']}"),
-    ]
+    # read-out strip
     sx = W - 34
-    for label, value in reversed(stats):
+    for label, value in reversed(
+        [
+            ("ACTIVE DAYS", str(active)),
+            ("LONGEST RUN", f"{longest}d"),
+            ("PEAK DAY", str(busiest["contributionCount"])),
+        ]
+    ):
         o.append(
-            f'<text x="{sx}" y="{ly + 4}" text-anchor="end" font-family="{SANS}" font-size="16" '
-            f'font-weight="600" fill="{TEXT}">{value}</text>'
+            f'<text x="{sx}" y="{ly + 2}" text-anchor="end" font-family="{MONO}" '
+            f'font-size="17" font-weight="700" fill="{TEXT}">{value}</text>'
         )
         o.append(
-            f'<text x="{sx}" y="{ly + 20}" text-anchor="end" font-family="{MONO}" font-size="9.5" '
-            f'fill="{FAINT}" letter-spacing="1.2">{label}</text>'
+            f'<text x="{sx}" y="{ly + 20}" text-anchor="end" font-family="{MONO}" '
+            f'font-size="9" fill="{FAINT}" letter-spacing="1.4">{label}</text>'
         )
-        sx -= 132
+        sx -= 128
 
-    o.append(
-        "<style>@keyframes bloom{0%,100%{opacity:.82}50%{opacity:1}}"
-        ".hot{animation:bloom 4.6s ease-in-out infinite}"
-        "@media (prefers-reduced-motion:reduce){.hot{animation:none;opacity:1}}</style>"
-    )
     o.append("</svg>")
     (ASSETS / "contributions.svg").write_text("".join(o))
-    print(
-        f"  contributions.svg  {total} contributions · {active} active days · longest {longest}d"
-    )
-
-
-def defs_backdrop() -> str:
-    return (
-        "<defs>"
-        f'<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">'
-        f'<stop offset="0" stop-color="{BG0}"/><stop offset="0.5" stop-color="{BG1}"/>'
-        f'<stop offset="1" stop-color="{BG2}"/></linearGradient>'
-        f'<radialGradient id="glowV"><stop offset="0" stop-color="{VIOLET}" stop-opacity="0.20"/>'
-        '<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
-        f'<radialGradient id="glowC"><stop offset="0" stop-color="{CYAN}" stop-opacity="0.15"/>'
-        '<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
-        f'<radialGradient id="glowP"><stop offset="0" stop-color="{PINK}" stop-opacity="0.13"/>'
-        '<stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>'
-        '<pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse">'
-        f'<path d="M26 0H0V26" fill="none" stroke="{VIOLET}" stroke-opacity="0.055"/></pattern>'
-        "</defs>"
-    )
+    print(f"  contributions.svg  {total} contributions · {active} active days")
 
 
 # ── hero ──────────────────────────────────────────────────────────────────────
+# A drawing title block: label column, value column, hairline ruled. Every row
+# is a fact stated elsewhere in the profile -- nothing invented to fill the grid.
+TITLE_BLOCK = [
+    ("ROLE", "Backend / distributed systems"),
+    ("FOCUS", "Agentic AI, cloud infrastructure"),
+    ("EDU", "M.S. Computer Science, Northeastern"),
+    ("LOC", "Fremont, CA · 37.55°N 121.99°W"),
+]
+
+NAME = "KELSON QU"
+# Monospace advance is ~0.6em across the stack in MONO, which is what lets the
+# caret be placed by arithmetic instead of by eye.
+MONO_ADVANCE = 0.6
+
+
 def build_hero() -> None:
-    W, H = 1000, 280
-    o: list[str] = []
-    o.append(
+    W, H = 1000, 296
+    o: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}" role="img" '
-        f'aria-label="Kelson Qu — backend, distributed systems, agentic AI">'
-    )
-    o.append("<title>Kelson Qu</title>")
-    o.append(defs_backdrop())
-    o.append(f'<rect width="{W}" height="{H}" rx="18" fill="url(#bg)"/>')
-    o.append(f'<rect width="{W}" height="{H}" rx="18" fill="url(#grid)"/>')
-
-    o.append(
-        '<g class="drift"><circle cx="150" cy="60" r="260" fill="url(#glowV)"/></g>'
-    )
-    o.append(
-        '<g class="drift2"><circle cx="880" cy="230" r="240" fill="url(#glowC)"/></g>'
-    )
-    o.append(
-        '<g class="drift3"><circle cx="620" cy="30" r="200" fill="url(#glowP)"/></g>'
-    )
-
-    # constellation — nodes and edges, a quiet nod to distributed systems
-    nodes = [
-        (742, 96),
-        (812, 62),
-        (884, 104),
-        (858, 178),
-        (776, 186),
-        (700, 150),
-        (930, 152),
-        (820, 126),
+        f'aria-label="Kelson Qu — backend and distributed systems; agentic AI '
+        f'and cloud infrastructure; M.S. Computer Science, Northeastern; '
+        f'Fremont, California">',
+        "<title>Kelson Qu</title>",
+        *panel(W, H),
     ]
-    edges = [
-        (0, 1),
-        (1, 2),
-        (2, 3),
-        (3, 4),
-        (4, 5),
-        (5, 0),
-        (7, 0),
-        (7, 2),
-        (7, 3),
-        (7, 4),
-        (2, 6),
-        (6, 3),
-    ]
-    for a, b in edges:
-        x1, y1 = nodes[a]
-        x2, y2 = nodes[b]
-        o.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{VIOLET}" '
-            f'stroke-opacity="0.42" stroke-width="1.1"/>'
-        )
-    for n, (x, y) in enumerate(nodes):
-        r = 5.5 if n == 7 else 3.6
-        fill = CYAN if n == 7 else VIOLET
-        o.append(
-            f'<circle cx="{x}" cy="{y}" r="{r}" fill="{fill}" class="pulse" '
-            f'style="animation-delay:{n * 0.42:.2f}s"/>'
-        )
 
     o.append(
-        f'<text x="64" y="86" font-family="{MONO}" font-size="12.5" fill="{CYAN}" '
-        f'letter-spacing="4.2">SOFTWARE&#160;ENGINEER</text>'
+        f'<text x="52" y="76" font-family="{MONO}" font-size="10.5" fill="{FAINT}" '
+        f'letter-spacing="3.4">GITHUB.COM / KAICHENQU</text>'
     )
+
+    # name set in mono caps: the default move here is a huge grotesk, and the
+    # mono is what commits to the instrument language the rest of the panel speaks
+    size, base = 50, 150
     o.append(
-        f'<text x="62" y="156" font-family="{SANS}" font-size="62" font-weight="700" '
-        f'fill="{TEXT}" letter-spacing="-1.6">Kelson Qu</text>'
+        f'<text x="50" y="{base}" font-family="{MONO}" font-size="{size}" '
+        f'font-weight="700" fill="{TEXT}">{NAME}</text>'
     )
-    o.append('<rect x="64" y="180" width="54" height="3" rx="1.5" fill="url(#rule)"/>')
+    caret_x = 50 + len(NAME) * size * MONO_ADVANCE + 20
     o.append(
-        '<defs><linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">'
-        f'<stop offset="0" stop-color="{VIOLET}"/><stop offset="1" stop-color="{CYAN}"/>'
-        "</linearGradient></defs>"
+        f'<rect class="caret" x="{caret_x:.0f}" y="{base - 38}" width="26" '
+        f'height="40" fill="{AMBER}"/>'
     )
+    o.append(f'<rect x="50" y="170" width="86" height="2" fill="{AMBER}"/>')
     o.append(
-        f'<text x="64" y="214" font-family="{SANS}" font-size="18" fill="{MUTED}">'
-        f"Distributed systems &#183; Agentic AI &#183; Cloud infrastructure</text>"
+        f'<text x="50" y="198" font-family="{MONO}" font-size="12" fill="{FAINT}" '
+        f'letter-spacing="0.4">Ship fast. Scale further. Break nothing.</text>'
     )
+
+    # title block, ruled, right column
+    bx, bw, rowh, y0 = 520, 430, 30, 56
+    lx = bx + 84
     o.append(
-        f'<text x="64" y="242" font-family="{MONO}" font-size="12.5" fill="{FAINT}" '
-        f'letter-spacing="0.6">M.S. Computer Science, Northeastern &#183; Fremont, CA</text>'
+        f'<path d="M{bx} {y0}V{y0 + len(TITLE_BLOCK) * rowh}M{lx} {y0}'
+        f'V{y0 + len(TITLE_BLOCK) * rowh}" stroke="{RULE}"/>'
+    )
+    for n, (label, value) in enumerate(TITLE_BLOCK):
+        top = y0 + n * rowh
+        o.append(f'<line x1="{bx}" y1="{top}" x2="{bx + bw}" y2="{top}" stroke="{RULE}"/>')
+        o.append(
+            f'<text x="{bx + 12}" y="{top + 19}" font-family="{MONO}" font-size="9.5" '
+            f'fill="{AMBER_D}" letter-spacing="1.4">{label}</text>'
+        )
+        o.append(
+            f'<text x="{lx + 12}" y="{top + 19}" font-family="{MONO}" font-size="11" '
+            f'fill="{MUTED}">{esc(value)}</text>'
+        )
+    bottom = y0 + len(TITLE_BLOCK) * rowh
+    o.append(f'<line x1="{bx}" y1="{bottom}" x2="{bx + bw}" y2="{bottom}" stroke="{RULE}"/>')
+
+    o.append(f'<line x1="50" y1="220" x2="{W - 50}" y2="220" stroke="{RULE}"/>')
+
+    # scale bar along the bottom edge, with a slow amber index travelling it
+    ty, t0, t1 = 250, 50, W - 50
+    for x in range(t0, t1 + 1, 12):
+        tall = (x - t0) % 60 == 0
+        o.append(f'<path d="M{x} {ty}v{7 if tall else 4}" stroke="{RULE}"/>')
+    o.append(f'<line x1="{t0}" y1="{ty}" x2="{t1}" y2="{ty}" stroke="{RULE}"/>')
+    o.append(
+        f'<g class="sweep"><path d="M{t0} {ty - 6}v18" stroke="{AMBER}" '
+        f'stroke-width="1.5"/></g>'
     )
 
     o.append(
         "<style>"
-        "@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(34px,18px)}}"
-        "@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-16px)}}"
-        "@keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,26px)}}"
-        "@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}"
-        ".drift{animation:drift 15s ease-in-out infinite}"
-        ".drift2{animation:drift2 19s ease-in-out infinite}"
-        ".drift3{animation:drift3 23s ease-in-out infinite}"
-        ".pulse{animation:pulse 3.4s ease-in-out infinite}"
+        # step-end, not eased: a caret is a hard blink, and easing it is a tell
+        "@keyframes caret{0%,49%{opacity:1}50%,100%{opacity:0}}"
+        f"@keyframes sweep{{0%{{transform:translateX(0)}}"
+        f"100%{{transform:translateX({t1 - t0}px)}}}}"
+        ".caret{animation:caret 1.1s step-end infinite}"
+        ".sweep{animation:sweep 9s linear infinite}"
         "@media (prefers-reduced-motion:reduce){"
-        ".drift,.drift2,.drift3,.pulse{animation:none}}"
+        ".caret,.sweep{animation:none}.sweep{opacity:0}}"
         "</style>"
     )
     o.append("</svg>")
@@ -502,53 +517,55 @@ def build_hero() -> None:
 
 # ── stack ─────────────────────────────────────────────────────────────────────
 def build_stack() -> None:
-    ROW_H, ICON = 92, 26
-    PAD_X, PAD_T = 34, 92
+    ROW_H, ICON = 86, 24
+    PAD_X, PAD_T = 34, 116
     W = 1000
-    H = PAD_T + len(STACK) * ROW_H + 22
+    H = PAD_T + len(STACK) * ROW_H + 20
 
-    o: list[str] = []
-    o.append(
+    o: list[str] = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" '
         f'viewBox="0 0 {W} {H}" role="img" aria-label="Toolchain: '
         + esc(
             "; ".join(
-                f"{cat} — " + ", ".join(n for n, _, _ in items) for cat, items in STACK
+                f"{cat} - " + ", ".join(n for n, _, _ in items) for cat, items in STACK
             )
         )
-        + '">'
-    )
-    o.append("<title>Toolchain</title>")
-    o.append(defs_backdrop())
-    o.append(f'<rect width="{W}" height="{H}" rx="18" fill="url(#bg)"/>')
-    o.append(f'<rect width="{W}" height="{H}" rx="18" fill="url(#grid)"/>')
-    o.append(
-        f'<rect x="0.5" y="0.5" width="{W - 1}" height="{H - 1}" rx="18" fill="none" stroke="{STROKE}"/>'
-    )
-    o.append('<circle cx="90" cy="20" r="230" fill="url(#glowV)"/>')
-    o.append(f'<circle cx="{W - 70}" cy="{H - 30}" r="230" fill="url(#glowC)"/>')
+        + '">',
+        "<title>Toolchain</title>",
+        *panel(W, H),
+        *heading(PAD_X, 46, "Toolchain", "WHAT I REACH FOR"),
+    ]
 
+    total = sum(len(i) for _, i in STACK)
     o.append(
-        f'<text x="{PAD_X}" y="48" font-family="{SANS}" font-size="21" font-weight="600" '
-        f'fill="{TEXT}">Toolchain</text>'
+        f'<text x="{W - PAD_X}" y="50" text-anchor="end" font-family="{MONO}" '
+        f'font-size="33" font-weight="700" fill="{AMBER}">{total}</text>'
     )
     o.append(
-        f'<text x="{PAD_X}" y="70" font-family="{MONO}" font-size="12" fill="{FAINT}" '
-        f'letter-spacing="1.4">WHAT I REACH FOR</text>'
+        f'<text x="{W - PAD_X}" y="70" text-anchor="end" font-family="{MONO}" '
+        f'font-size="10" fill="{FAINT}" letter-spacing="2">TOOLS / '
+        f"{len(STACK)} GROUPS</text>"
     )
+    o.append(f'<line x1="{PAD_X}" y1="88" x2="{W - PAD_X}" y2="88" stroke="{RULE}"/>')
 
-    cache: dict[str, list[str]] = {}
+    cache: dict[str, tuple[list[str], float, float]] = {}
     for ri, (cat, items) in enumerate(STACK):
         top = PAD_T + ri * ROW_H
         if ri:
             o.append(
-                f'<line x1="{PAD_X}" y1="{top - 16}" x2="{W - PAD_X}" y2="{top - 16}" '
-                f'stroke="{STROKE}" stroke-opacity="0.6"/>'
+                f'<line x1="{PAD_X}" y1="{top - 20}" x2="{W - PAD_X}" y2="{top - 20}" '
+                f'stroke="{RULE_F}"/>'
             )
         o.append(
-            f'<text x="{PAD_X}" y="{top + 18}" font-family="{MONO}" font-size="12" '
-            f'fill="{VIOLET}" letter-spacing="2.2">{esc(cat.upper())}</text>'
+            f'<text x="{PAD_X}" y="{top + 14}" font-family="{MONO}" font-size="10" '
+            f'fill="{AMBER_D}">{ri + 1:02d}</text>'
         )
+        o.append(
+            f'<text x="{PAD_X + 26}" y="{top + 14}" font-family="{MONO}" '
+            f'font-size="11" fill="{MUTED}" letter-spacing="2">'
+            f"{esc(cat.upper())}</text>"
+        )
+
         x = PAD_X
         for name, slug, tint in items:
             if slug not in cache:
@@ -561,12 +578,12 @@ def build_stack() -> None:
             iw = min(vw * s, ICON * 2.6)
             s = min(s, iw / vw)
 
-            wchip = 22 + iw + 9 + 8 * len(name) + 12
+            wchip = 20 + iw + 9 + 8 * len(name) + 12
             o.append(
-                f'<g class="chip"><rect x="{x}" y="{top + 30}" width="{wchip:.0f}" height="38" '
-                f'rx="10" fill="{SURFACE}" fill-opacity="0.72" stroke="{STROKE}"/>'
+                f'<rect x="{x}" y="{top + 28}" width="{wchip:.0f}" height="34" rx="3" '
+                f'fill="{CHIP}" stroke="{RULE}"/>'
             )
-            ix, iy = x + 12, top + 49 - (vh * s) / 2
+            ix, iy = x + 11, top + 45 - (vh * s) / 2
             o.append(
                 f'<g transform="translate({ix:.1f},{iy:.1f}) scale({s:.4f})" fill="{tint}">'
             )
@@ -574,13 +591,13 @@ def build_stack() -> None:
                 o.append(f'<path d="{d}"/>')
             o.append("</g>")
             o.append(
-                f'<text x="{ix + iw + 9:.1f}" y="{top + 54}" font-family="{SANS}" '
-                f'font-size="13.5" fill="{TEXT}" fill-opacity="0.92">{esc(name)}</text></g>'
+                f'<text x="{ix + iw + 9:.1f}" y="{top + 50}" font-family="{MONO}" '
+                f'font-size="12" fill="{TEXT}" fill-opacity="0.9">{esc(name)}</text>'
             )
-            x += wchip + 10
+            x += wchip + 8
     o.append("</svg>")
     (ASSETS / "stack.svg").write_text("".join(o))
-    print(f"  stack.svg          {sum(len(i) for _, i in STACK)} tools")
+    print(f"  stack.svg          {total} tools")
 
 
 def main() -> None:
