@@ -42,7 +42,6 @@ ASSETS = ROOT / "assets"
 # Neutral near-black, not a tinted one. A violet or blue cast on the background
 # is most of what makes the AI-generated look read as AI-generated.
 INK = "#0A0A0C"
-PANEL = "#101013"
 CHIP = "#131317"
 RULE = "#26262E"  # visible hairline
 RULE_F = "#17171C"  # graph-paper hairline

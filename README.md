@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/KaichenQu/KaichenQu/main/assets/hero.svg" width="100%" alt="Kelson Qu — software engineer. Distributed systems, agentic AI, cloud infrastructure. M.S. Computer Science, Northeastern. Fremont, CA."/>
+<img src="https://raw.githubusercontent.com/KaichenQu/KaichenQu/main/assets/hero.svg" width="100%" alt="Kelson Qu. Role: backend and distributed systems. Focus: agentic AI and cloud infrastructure. Education: M.S. Computer Science, Northeastern. Location: Fremont, CA."/>
 
 <div align="center">
 
