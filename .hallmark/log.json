@@ -3,10 +3,19 @@
     "date": "2026-07-26",
     "macrostructure": "Workbench",
     "theme": "custom",
+    "theme_axes": "theme-adaptive (transparent) / mono display / warm-amber accent",
+    "vibe": "engineering drawing, instrument read-out",
+    "enrichment": "E5 hand-built SVG \u2014 light + dark variants behind prefers-color-scheme",
+    "brief": "KaichenQu GitHub profile README \u2014 panels drop their own background so they inherit the page instead of sitting as slabs; brand icon tints are computed per theme by WCAG contrast rather than hand-tuned"
+  },
+  {
+    "date": "2026-07-26",
+    "macrostructure": "Workbench",
+    "theme": "custom",
     "theme_axes": "dark / mono display / warm-amber accent",
     "vibe": "engineering drawing, instrument read-out",
-    "enrichment": "E5 hand-built SVG — ruled title block, chip index, thermal calendar",
-    "brief": "KaichenQu GitHub profile README — flat ink, hairline rules, graph-paper grid, register marks; deliberately drops the gradient-bloom + node-constellation vocabulary of the previous run"
+    "enrichment": "E5 hand-built SVG \u2014 ruled title block, chip index, thermal calendar",
+    "brief": "KaichenQu GitHub profile README \u2014 flat ink, hairline rules, graph-paper grid, register marks; deliberately drops the gradient-bloom + node-constellation vocabulary of the previous run"
   },
   {
     "date": "2026-07-26",
@@ -14,14 +23,14 @@
     "theme": "custom",
     "theme_axes": "dark / grotesk-sans / chromatic-violet",
     "vibe": "deep violet night, quiet network glow",
-    "enrichment": "E5 hand-built SVG — animated hero, toolchain panel, contribution calendar",
-    "brief": "KaichenQu GitHub profile README — self-drawn SVG panels, superseded same day for reading as machine-generated"
+    "enrichment": "E5 hand-built SVG \u2014 animated hero, toolchain panel, contribution calendar",
+    "brief": "KaichenQu GitHub profile README \u2014 self-drawn SVG panels, superseded same day for reading as machine-generated"
   },
   {
     "date": "2026-07-26",
     "macrostructure": "Workbench",
     "theme": "GitHub-native (dark #0D1117 band / cool #58A6FF accent / mono display)",
-    "enrichment": "none — live data cards only",
-    "brief": "KaichenQu GitHub profile README — dense labelled panels, dual-theme <picture>, superseded same day"
+    "enrichment": "none \u2014 live data cards only",
+    "brief": "KaichenQu GitHub profile README \u2014 dense labelled panels, dual-theme <picture>, superseded same day"
   }
 ]
