@@ -8,11 +8,21 @@ returning 503 DEPLOYMENT_PAUSED and github-profile-trophy 402 for months).
     python3 scripts/build_assets.py
 
 Requires the `gh` CLI, authenticated. Writes into assets/.
+
+Caveat on the calendar: contributionsCollection returns only PUBLIC
+contributions unless "Include private contributions on my profile" is
+enabled in GitHub profile settings. With it off, commits to private repos
+(e.g. the longrangeorder org) are absent from the response entirely --
+restrictedContributionsCount stays 0, so nothing signals the gap. Verified
+2026-07-26: 42 commits authored on longrangeorder default branches, all
+correctly attributed to the account, none present in the collection. Turn
+the setting on before re-running if those should be counted.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import urllib.request
 from datetime import date
@@ -73,8 +83,6 @@ def icon_paths(slug: str) -> tuple[list[str], float, float]:
     only AWS asset is a wide wordmark — hence the caller scales by viewBox
     rather than assuming 24x24.
     """
-    import re
-
     svg = None
     for url in (SI.format(slug), DEVICON.format(slug), DEVICON_WORDMARK.format(slug)):
         try:
