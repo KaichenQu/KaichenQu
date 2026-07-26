@@ -208,11 +208,11 @@ def build_contributions() -> None:
     days = [d for w in weeks for d in w["contributionDays"]]
     total = cal["totalContributions"]
 
-    counts = sorted(
-        {d["contributionCount"] for d in days if d["contributionCount"] > 0}
-    )
-    # quartile thresholds over the non-zero distribution, so a sparse year still
-    # shows four distinct tones instead of collapsing to one.
+    # Quantiles over every active DAY, not over the distinct counts. Ranking
+    # distinct values instead buries the shape of a bursty year: with 43 active
+    # days spread over only 14 distinct counts, it pushed 33 of them into the
+    # dimmest band and left one day alone at the top.
+    counts = sorted(d["contributionCount"] for d in days if d["contributionCount"] > 0)
     if counts:
         q = [
             counts[min(len(counts) - 1, int(len(counts) * f))]
@@ -314,12 +314,27 @@ def build_contributions() -> None:
     o.append(
         f'<text x="{PAD_L}" y="{ly + 11}" font-family="{MONO}" font-size="11" fill="{FAINT}">Less</text>'
     )
+    # Spell the band each tone stands for; a bare Less→More ramp says nothing
+    # about whether a lit cell means one commit or eighteen.
+    bands = ["0"]
+    for n in range(1, 4):
+        lo, hi = thresholds[n - 1] + 1, thresholds[n]
+        bands.append(str(lo) if lo >= hi else f"{lo}–{hi}")
+    bands.append(f"{thresholds[3] + 1}+")
+
+    # wide enough for the band labels to sit under each swatch without touching
+    LSTEP = 40
     for n, c in enumerate(LEVELS):
+        cx = PAD_L + 42 + n * LSTEP
         o.append(
-            f'<rect x="{PAD_L + 42 + n * STEP}" y="{ly}" width="{CELL}" height="{CELL}" rx="3.5" fill="{c}"/>'
+            f'<rect x="{cx}" y="{ly}" width="{CELL}" height="{CELL}" rx="3.5" fill="{c}"/>'
+        )
+        o.append(
+            f'<text x="{cx + CELL / 2}" y="{ly + 26}" text-anchor="middle" '
+            f'font-family="{MONO}" font-size="8.5" fill="{FAINT}">{bands[n]}</text>'
         )
     o.append(
-        f'<text x="{PAD_L + 42 + 5 * STEP + 6}" y="{ly + 11}" font-family="{MONO}" font-size="11" '
+        f'<text x="{PAD_L + 42 + 4 * LSTEP + CELL + 12}" y="{ly + 11}" font-family="{MONO}" font-size="11" '
         f'fill="{FAINT}">More</text>'
     )
 
