@@ -193,18 +193,13 @@ def level_of(count: int, thresholds: list[int]) -> int:
     return 4
 
 
-def streaks(days: list[dict]) -> tuple[int, int]:
+def longest_streak(days: list[dict]) -> int:
+    """Longest run of consecutive days with at least one contribution."""
     longest = run = 0
     for d in days:
         run = run + 1 if d["contributionCount"] > 0 else 0
         longest = max(longest, run)
-    current = 0
-    for d in reversed(days):
-        if d["contributionCount"] > 0:
-            current += 1
-        elif current or d is days[-1]:
-            break
-    return current, longest
+    return longest
 
 
 def build_contributions() -> None:
@@ -229,7 +224,7 @@ def build_contributions() -> None:
 
     active = sum(1 for d in days if d["contributionCount"] > 0)
     busiest = max(days, key=lambda d: d["contributionCount"])
-    cur, longest = streaks(days)
+    longest = longest_streak(days)
 
     CELL, GAP = 13, 3
     STEP = CELL + GAP
@@ -484,7 +479,7 @@ def build_hero() -> None:
 
 # ── stack ─────────────────────────────────────────────────────────────────────
 def build_stack() -> None:
-    ROW_H, ICON, CHIP = 92, 26, 46
+    ROW_H, ICON = 92, 26
     PAD_X, PAD_T = 34, 92
     W = 1000
     H = PAD_T + len(STACK) * ROW_H + 22

@@ -1,9 +1,18 @@
 [
   {
     "date": "2026-07-26",
+    "macrostructure": "Marquee Hero",
+    "theme": "custom",
+    "theme_axes": "dark / grotesk-sans / chromatic-violet",
+    "vibe": "deep violet night, quiet network glow",
+    "enrichment": "E5 hand-built SVG — animated hero, toolchain panel, contribution calendar",
+    "brief": "KaichenQu GitHub profile README — self-drawn SVG panels, no third-party stat cards, no GitHub Actions"
+  },
+  {
+    "date": "2026-07-26",
     "macrostructure": "Workbench",
     "theme": "GitHub-native (dark #0D1117 band / cool #58A6FF accent / mono display)",
     "enrichment": "none — live data cards only",
-    "brief": "KaichenQu GitHub profile README — dense labelled panels, dual-theme <picture>, zero dead assets, no GitHub Actions"
+    "brief": "KaichenQu GitHub profile README — dense labelled panels, dual-theme <picture>, superseded same day"
   }
 ]
