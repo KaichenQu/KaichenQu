@@ -139,7 +139,7 @@ def contrast(a: float, b: float) -> float:
     return (hi + 0.05) / (lo + 0.05)
 
 
-def legible(color: str, bg_lum: float, target: float = 3.0) -> str:
+def legible(color: str, bg_lum: float, target: float) -> str:
     """Nudge a brand colour until it clears `target` contrast on the page.
 
     Lets the STACK table state each tool's real brand colour once instead of
@@ -363,7 +363,7 @@ def longest_streak(days: list[dict]) -> int:
     return longest
 
 
-def build_contributions(t: Theme, cal: dict) -> None:
+def build_contributions(t: Theme, cal: dict) -> tuple[int, int]:
     weeks = cal["weeks"]
     days = [d for w in weeks for d in w["contributionDays"]]
     total = cal["totalContributions"]
@@ -480,8 +480,7 @@ def build_contributions(t: Theme, cal: dict) -> None:
 
     o.append("</svg>")
     write(t, "contributions", "".join(o))
-    if t is DARK:
-        print(f"  contributions      {total} total · {active} active days")
+    return total, active
 
 
 # ── hero ──────────────────────────────────────────────────────────────────────
@@ -574,8 +573,6 @@ def build_hero(t: Theme) -> None:
         "</style></svg>"
     )
     write(t, "hero", "".join(o))
-    if t is DARK:
-        print("  hero")
 
 
 # ── stack ─────────────────────────────────────────────────────────────────────
@@ -646,18 +643,25 @@ def build_stack(t: Theme) -> None:
             x += wchip + 8
     o.append("</svg>")
     write(t, "stack", "".join(o))
-    if t is DARK:
-        print(f"  stack              {total} tools")
 
 
 def main() -> None:
+    """Draw every panel in both themes, then report once.
+
+    Reporting lives here rather than in the draw functions so those do not
+    have to know they are being called twice.
+    """
     ASSETS.mkdir(exist_ok=True)
-    print("building assets/ (light + dark)")
+    themes = (DARK, LIGHT)
     cal = calendar()
-    for t in (DARK, LIGHT):
+    for t in themes:
         build_hero(t)
         build_stack(t)
-        build_contributions(t, cal)
+        total, active = build_contributions(t, cal)
+
+    print(f"assets/  {3 * len(themes)} files, {len(themes)} themes")
+    print(f"  toolchain      {sum(len(i) for _, i in STACK)} tools / {len(STACK)} groups")
+    print(f"  calendar       {total} contributions · {active} active days")
 
 
 if __name__ == "__main__":
